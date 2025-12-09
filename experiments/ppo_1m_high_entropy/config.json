@@ -1,0 +1,21 @@
+{
+  "experiment_name": "ppo_1m_high_entropy",
+  "description": "1M timesteps with high entropy - best combo?",
+  "timestamp": "2025-11-30T15:13:18.776988",
+  "training_time_seconds": 1431.302636,
+  "algorithm": "PPO",
+  "total_timesteps": 1000000,
+  "seed": 42,
+  "ppo_config": {
+    "learning_rate": 0.0003,
+    "n_steps": 2048,
+    "batch_size": 128,
+    "n_epochs": 10,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "clip_range": 0.2,
+    "ent_coef": 0.05
+  },
+  "train_period": "2019-01-01 to 2023-12-31",
+  "test_period": "2024-01-01 to 2025-10-30"
+}

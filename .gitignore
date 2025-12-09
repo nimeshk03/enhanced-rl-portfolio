@@ -1,0 +1,153 @@
+# =============================================================================
+# Python
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# =============================================================================
+# Data files (large files - download locally)
+# =============================================================================
+data/
+*.pkl
+*.h5
+*.hdf5
+*.parquet
+*.feather
+
+# =============================================================================
+# Model files (large binary files)
+# =============================================================================
+models/
+*.zip
+*.pt
+*.pth
+*.onnx
+
+# Experiment model files and checkpoints (keep configs/metrics)
+experiments/*/models/
+experiments/*/checkpoints/
+experiments/*/*.zip
+experiments/*/*.pkl
+experiments/*/tensorboard/
+
+# Large experiment outputs (regenerable)
+experiments/**/portfolio_values.csv
+
+# =============================================================================
+# Training outputs and logs
+# =============================================================================
+*.log
+logs/
+tensorboard/
+*_tensorboard/
+runs/
+*.out
+wandb/
+mlruns/
+
+# Optuna studies
+*.db
+optuna_study/
+
+# =============================================================================
+# Jupyter Notebooks
+# =============================================================================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+notebooks/outputs/
+
+# =============================================================================
+# IDE and editors
+# =============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.spyderproject
+.spyproject
+
+# =============================================================================
+# OS generated files
+# =============================================================================
+.DS_Store
+Thumbs.db
+.Trash-*
+desktop.ini
+
+# =============================================================================
+# Environment and secrets (CRITICAL - never commit!)
+# =============================================================================
+.env
+.env.*
+!.env.example
+config.py
+!config_example.py
+secrets/
+*.pem
+*.key
+
+# =============================================================================
+# Testing and coverage
+# =============================================================================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# =============================================================================
+# Documentation builds
+# =============================================================================
+docs/_build/
+site/
+
+# =============================================================================
+# Temporary and cache files
+# =============================================================================
+*.tmp
+*.temp
+*.cache
+.cache/
+tmp/
+temp/
+
+# =============================================================================
+# Colab/Kaggle specific
+# =============================================================================
+sample_data/
+drive/
+
+# =============================================================================
+# Results that should be regenerated
+# =============================================================================
+results/
+outputs/
+backtest_results/
+
+# =============================================================================
+# Deployment files (keep in original public repo only)
+# =============================================================================
+Procfile
+Dockerfile
+docker-compose.yml
+runtime.txt
+.slugignore
+HEROKU_DEPLOY.md
+heroku.yml
+
+#.md files
+enhancement_implementation_plan.md
+rl-portfolio-enhancement-plan.md

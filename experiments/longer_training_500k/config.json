@@ -1,0 +1,21 @@
+{
+  "experiment_name": "longer_training_500k",
+  "description": "Testing if 500k timesteps improves performance",
+  "timestamp": "2025-11-30T13:53:12.061023",
+  "training_time_seconds": 816.15813,
+  "algorithm": "PPO",
+  "total_timesteps": 500000,
+  "seed": 42,
+  "ppo_config": {
+    "learning_rate": 0.0003,
+    "n_steps": 2048,
+    "batch_size": 128,
+    "n_epochs": 10,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "clip_range": 0.2,
+    "ent_coef": 0.01
+  },
+  "train_period": "2019-01-01 to 2023-12-31",
+  "test_period": "2024-01-01 to 2025-10-30"
+}
