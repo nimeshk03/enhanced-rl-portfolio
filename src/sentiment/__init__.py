@@ -15,9 +15,21 @@ Components:
 from src.sentiment.provider import SentimentDataProvider
 from src.sentiment.csv_provider import CsvFileProvider
 from src.sentiment.api_provider import FinBertApiProvider
+from src.sentiment.features import (
+    compute_sentiment_features,
+    merge_sentiment_with_market_data,
+    normalize_features,
+    get_feature_statistics,
+)
 
 __all__ = [
+    # Providers
     "SentimentDataProvider",
     "CsvFileProvider", 
     "FinBertApiProvider",
+    # Feature engineering
+    "compute_sentiment_features",
+    "merge_sentiment_with_market_data",
+    "normalize_features",
+    "get_feature_statistics",
 ]

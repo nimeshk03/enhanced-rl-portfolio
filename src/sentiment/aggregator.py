@@ -273,7 +273,9 @@ def compute_sector_sentiment(
         return pd.Series(result, index=group.index)
     
     # Simpler approach: sector average per date
-    sector_avg = df.groupby(["date", "sector"])["sentiment_mean"].transform("mean")
+    # Handle both sentiment_mean (from aggregator) and sentiment_score (renamed)
+    score_col = "sentiment_mean" if "sentiment_mean" in df.columns else "sentiment_score"
+    sector_avg = df.groupby(["date", "sector"])[score_col].transform("mean")
     df["sector_sentiment"] = sector_avg
     
     # Drop temp column
@@ -303,14 +305,17 @@ def compute_market_sentiment(
     
     df = df.copy()
     
+    # Handle both sentiment_mean (from aggregator) and sentiment_score (renamed)
+    score_col = "sentiment_mean" if "sentiment_mean" in df.columns else "sentiment_score"
+    
     # Extract market sentiment
-    market_df = df[df["ticker"] == market_ticker][["date", "sentiment_mean"]].copy()
-    market_df = market_df.rename(columns={"sentiment_mean": "market_sentiment"})
+    market_df = df[df["ticker"] == market_ticker][["date", score_col]].copy()
+    market_df = market_df.rename(columns={score_col: "market_sentiment"})
     
     if len(market_df) == 0:
         # No market data - use overall average
-        market_avg = df.groupby("date")["sentiment_mean"].mean().reset_index()
-        market_avg = market_avg.rename(columns={"sentiment_mean": "market_sentiment"})
+        market_avg = df.groupby("date")[score_col].mean().reset_index()
+        market_avg = market_avg.rename(columns={score_col: "market_sentiment"})
         df = df.merge(market_avg, on="date", how="left")
     else:
         df = df.merge(market_df, on="date", how="left")
