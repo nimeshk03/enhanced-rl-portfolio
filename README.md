@@ -290,15 +290,17 @@ rl_portfolio/
 │   └── data/               # Data collection and processing
 │       ├── __init__.py
 │       ├── news_collector.py      # Multi-source news collection
-│       └── sentiment_inference.py # FinBERT sentiment inference
+│       ├── sentiment_inference.py # FinBERT sentiment inference
+│       └── sentiment_proxy.py     # Proxy sentiment for sparse periods
 ├── notebooks/              # Jupyter notebooks
 │   └── generate_historical_sentiment.ipynb  # Colab/Kaggle GPU inference
-├── tests/                  # Unit tests (81 total)
+├── tests/                  # Unit tests (103 total)
 │   ├── __init__.py
 │   ├── test_sentiment_provider.py   # 21 provider tests
 │   ├── test_sentiment_features.py   # 23 feature tests
 │   ├── test_news_collector.py       # 20 news collector tests
-│   └── test_sentiment_inference.py  # 17 inference tests
+│   ├── test_sentiment_inference.py  # 17 inference tests
+│   └── test_sentiment_proxy.py      # 22 proxy tests
 ├── experiments/            # Experiment tracking and results
 │   ├── experiments_summary.csv
 │   └── {experiment_name}/
