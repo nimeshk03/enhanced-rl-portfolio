@@ -17,14 +17,14 @@ This project demonstrates the integration of:
 - **Financials**: JPM, BAC
 - **Safe Havens**: GLD (Gold), TLT (Bonds), SPY (S&P 500)
 
-**Date Range**: 2019-01-02 to 2025-10-29 (6+ years, includes COVID crash)
+**Date Range**: 2015-01-02 to 2025-11-28 (11 years, includes COVID crash)
 
 **Features** (17 total):
 - Base OHLCV data (7 columns)
 - Technical indicators (8): MACD, Bollinger Bands, RSI-30, CCI-30, DX-30, SMA-30, SMA-60
 - Market stress indicators (2): VIX, Turbulence Index
 
-**Total Dataset**: 17,170 rows × 17 columns
+**Total Dataset**: 27,440 rows × 17 columns
 
 ## Quick Start
 
@@ -278,17 +278,20 @@ rl_portfolio/
 │   └── processed_data.csv
 ├── models/                 # Trained RL agents (gitignored)
 │   └── ppo_portfolio_agent.zip
-├── experiments/            # Experiment tracking and results (10 total)
+├── src/                    # Source modules for enhanced features
+│   ├── __init__.py
+│   └── sentiment/          # Modular sentiment integration
+│       ├── __init__.py
+│       ├── provider.py     # Abstract SentimentDataProvider interface
+│       ├── csv_provider.py # CsvFileProvider for historical data
+│       ├── api_provider.py # FinBertApiProvider for live inference
+│       └── aggregator.py   # Daily aggregation utilities
+├── tests/                  # Unit tests
+│   ├── __init__.py
+│   └── test_sentiment_provider.py
+├── experiments/            # Experiment tracking and results
 │   ├── experiments_summary.csv
-│   ├── baseline_200k/
-│   ├── longer_training_500k/
-│   ├── lower_lr/
-│   ├── a2c_500k/
-│   ├── ppo_high_entropy/
-│   ├── ppo_1m_high_entropy/  # Best performer (seed 42)
-│   ├── best_seed_456_1m/     Strong alternative (seed 456)
-│   ├── ensemble_3agents_500k/
-│   └── ensemble_5agents_500k/
+│   └── {experiment_name}/
 │       ├── config.json
 │       ├── metrics.csv
 │       ├── portfolio_values.csv
@@ -463,6 +466,6 @@ MIT License - Feel free to use for learning and portfolio projects
 
 ---
 
-**Status**: Data pipeline [DONE] | Training (10 experiments) [DONE] | Backtesting [DONE] | Paper Trading Deployed | Dashboard Live
+**Status**: Data pipeline [DONE] | Training (10 experiments) [DONE] | Backtesting [DONE] | Paper Trading Deployed | Dashboard Live | Sentiment Module [IN PROGRESS]
 
-Last updated: 2025-12-01
+Last updated: 2025-12-10
