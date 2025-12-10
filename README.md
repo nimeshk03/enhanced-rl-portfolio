@@ -280,17 +280,21 @@ rl_portfolio/
 │   └── ppo_portfolio_agent.zip
 ├── src/                    # Source modules for enhanced features
 │   ├── __init__.py
-│   └── sentiment/          # Modular sentiment integration (44 tests)
+│   ├── sentiment/          # Modular sentiment integration
+│   │   ├── __init__.py
+│   │   ├── provider.py     # Abstract SentimentDataProvider interface
+│   │   ├── csv_provider.py # CsvFileProvider for historical data
+│   │   ├── api_provider.py # FinBertApiProvider for live inference
+│   │   ├── aggregator.py   # Daily aggregation utilities
+│   │   └── features.py     # Sentiment feature engineering
+│   └── data/               # Data collection utilities
 │       ├── __init__.py
-│       ├── provider.py     # Abstract SentimentDataProvider interface
-│       ├── csv_provider.py # CsvFileProvider for historical data
-│       ├── api_provider.py # FinBertApiProvider for live inference
-│       ├── aggregator.py   # Daily aggregation utilities
-│       └── features.py     # Sentiment feature engineering
-├── tests/                  # Unit tests
+│       └── news_collector.py  # Multi-source news collection
+├── tests/                  # Unit tests (64 total)
 │   ├── __init__.py
 │   ├── test_sentiment_provider.py  # 21 provider tests
-│   └── test_sentiment_features.py  # 23 feature tests
+│   ├── test_sentiment_features.py  # 23 feature tests
+│   └── test_news_collector.py      # 20 news collector tests
 ├── experiments/            # Experiment tracking and results
 │   ├── experiments_summary.csv
 │   └── {experiment_name}/
