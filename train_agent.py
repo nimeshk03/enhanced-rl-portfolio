@@ -53,11 +53,11 @@ MODEL_DIR = "./models"
 RESULTS_DIR = "./results"
 
 # Time periods for train/test split
-# We'll use a proper walk-forward validation approach
-TRAIN_START = "2019-01-01"
-TRAIN_END = "2023-12-31"    # 5 years of training data
-TRADE_START = "2024-01-01"
-TRADE_END = "2025-10-30"    # ~10 months of testing
+# Extended training data (2015-2024) for enhanced model
+TRAIN_START = "2015-01-01"
+TRAIN_END = "2024-06-30"    # ~9.5 years of training data
+TRADE_START = "2024-07-01"
+TRADE_END = "2025-11-30"    # ~17 months of testing
 
 # Environment configuration
 ENV_CONFIG = {

@@ -19,9 +19,9 @@ import yfinance as yf
 if not os.path.exists("./data"):
     os.makedirs("./data")
 
-# Match the date range from your main data
-START_DATE = '2019-01-01'
-END_DATE = '2025-10-30'
+# Match the date range from your main data (extended for enhanced training)
+START_DATE = '2015-01-01'
+END_DATE = '2025-11-30'
 
 print("=" * 60)
 print("DOWNLOADING VIX DATA")

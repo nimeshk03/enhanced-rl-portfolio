@@ -18,6 +18,7 @@ stable-baselines3>=2.0.0
 
 # FinRL library
 finrl>=0.3.0
+wrds>=3.0.0  # Required by FinRL data processors
 
 # Deployment
 streamlit>=1.20.0

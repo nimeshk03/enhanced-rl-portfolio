@@ -37,8 +37,9 @@ STOCK_TICKERS = [
 ]
 
 # Date range for historical download (YYYY-MM-DD)
-START_DATE = '2019-01-01'
-END_DATE = '2025-10-30'
+# Extended for enhanced training (was 2019-01-01)
+START_DATE = '2015-01-01'
+END_DATE = '2025-11-30'
 
 
 def download_with_yfinance_directly():
@@ -142,6 +143,74 @@ def download_with_yfinance_directly():
     return df
 
 
+def validate_data(df: pd.DataFrame) -> bool:
+    """
+    Validate downloaded data meets quality requirements.
+    
+    Returns:
+        True if validation passes, False otherwise
+    """
+    print("\n" + "=" * 60)
+    print("DATA VALIDATION")
+    print("=" * 60)
+    
+    issues = []
+    
+    # Check 1: All tickers present
+    missing_tickers = set(STOCK_TICKERS) - set(df['tic'].unique())
+    if missing_tickers:
+        issues.append(f"Missing tickers: {missing_tickers}")
+    print(f"[{'OK' if not missing_tickers else 'FAIL'}] Tickers: {len(df['tic'].unique())}/{len(STOCK_TICKERS)}")
+    
+    # Check 2: Date range coverage
+    date_min = pd.to_datetime(df['date'].min())
+    date_max = pd.to_datetime(df['date'].max())
+    expected_start = pd.to_datetime(START_DATE)
+    
+    # Allow 5 days tolerance for market holidays
+    if (date_min - expected_start).days > 5:
+        issues.append(f"Data starts too late: {date_min} (expected ~{expected_start})")
+    print(f"[{'OK' if (date_min - expected_start).days <= 5 else 'WARN'}] Start date: {date_min.strftime('%Y-%m-%d')}")
+    print(f"[OK] End date: {date_max.strftime('%Y-%m-%d')}")
+    
+    # Check 3: Trading days count
+    trading_days = df['date'].nunique()
+    years = (date_max - date_min).days / 365
+    expected_days = int(years * 252)  # ~252 trading days per year
+    
+    if trading_days < expected_days * 0.9:  # Allow 10% tolerance
+        issues.append(f"Too few trading days: {trading_days} (expected ~{expected_days})")
+    print(f"[{'OK' if trading_days >= expected_days * 0.9 else 'WARN'}] Trading days: {trading_days} (expected ~{expected_days})")
+    
+    # Check 4: No missing values in critical columns
+    critical_cols = ['date', 'open', 'high', 'low', 'close', 'volume', 'tic']
+    for col in critical_cols:
+        if col in df.columns:
+            null_count = df[col].isna().sum()
+            if null_count > 0:
+                issues.append(f"Column '{col}' has {null_count} null values")
+                print(f"[WARN] Column '{col}': {null_count} null values")
+    
+    # Check 5: Data per ticker
+    print("\nRows per ticker:")
+    ticker_counts = df.groupby('tic').size()
+    for ticker, count in ticker_counts.items():
+        status = 'OK' if count >= expected_days * 0.9 else 'WARN'
+        print(f"  [{status}] {ticker}: {count} rows")
+    
+    # Summary
+    print("\n" + "-" * 60)
+    if issues:
+        print("VALIDATION WARNINGS:")
+        for issue in issues:
+            print(f"  - {issue}")
+        print("\nData downloaded but has warnings. Review above.")
+        return False
+    else:
+        print("VALIDATION PASSED - All checks OK")
+        return True
+
+
 def main():
     """Main entry point: download, save, and verify data."""
     
@@ -154,7 +223,7 @@ def main():
     print(f"\n[OK] Data saved to '{out_path}'")
 
     # --- Quick verification / sanity checks ---
-    print("\n--- DATA VERIFICATION ---")
+    print("\n--- DATA SUMMARY ---")
     print(f"Shape of dataframe: {df.shape}")
     print(f"Unique tickers found: {sorted(df.tic.unique())}")
     print(f"Date range: {df.date.min()} to {df.date.max()}")
@@ -162,7 +231,14 @@ def main():
     print(df.head())
     print(f"\nLast 5 rows:")
     print(df.tail())
+    
+    # Run validation
+    validation_passed = validate_data(df)
+    
+    # Return exit code based on validation
+    return 0 if validation_passed else 1
 
 
 if __name__ == '__main__':
-    main()
+    exit_code = main()
+    sys.exit(exit_code)
