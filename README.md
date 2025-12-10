@@ -287,14 +287,18 @@ rl_portfolio/
 │   │   ├── api_provider.py # FinBertApiProvider for live inference
 │   │   ├── aggregator.py   # Daily aggregation utilities
 │   │   └── features.py     # Sentiment feature engineering
-│   └── data/               # Data collection utilities
+│   └── data/               # Data collection and processing
 │       ├── __init__.py
-│       └── news_collector.py  # Multi-source news collection
-├── tests/                  # Unit tests (64 total)
+│       ├── news_collector.py      # Multi-source news collection
+│       └── sentiment_inference.py # FinBERT sentiment inference
+├── notebooks/              # Jupyter notebooks
+│   └── generate_historical_sentiment.ipynb  # Colab/Kaggle GPU inference
+├── tests/                  # Unit tests (81 total)
 │   ├── __init__.py
-│   ├── test_sentiment_provider.py  # 21 provider tests
-│   ├── test_sentiment_features.py  # 23 feature tests
-│   └── test_news_collector.py      # 20 news collector tests
+│   ├── test_sentiment_provider.py   # 21 provider tests
+│   ├── test_sentiment_features.py   # 23 feature tests
+│   ├── test_news_collector.py       # 20 news collector tests
+│   └── test_sentiment_inference.py  # 17 inference tests
 ├── experiments/            # Experiment tracking and results
 │   ├── experiments_summary.csv
 │   └── {experiment_name}/
