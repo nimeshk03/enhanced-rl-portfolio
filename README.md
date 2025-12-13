@@ -297,7 +297,8 @@ rl_portfolio/
 │       ├── __init__.py
 │       └── enhanced_portfolio_env.py  # Gymnasium env with sentiment
 ├── notebooks/              # Jupyter notebooks
-│   └── generate_historical_sentiment.ipynb  # Colab/Kaggle GPU inference
+│   ├── generate_historical_sentiment.ipynb  # Colab/Kaggle GPU inference
+│   └── train_enhanced.ipynb                 # Enhanced model training on Colab
 ├── tests/                  # Unit tests (141 total)
 │   ├── __init__.py
 │   ├── test_sentiment_provider.py   # 21 provider tests
