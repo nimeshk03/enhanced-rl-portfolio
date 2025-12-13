@@ -82,6 +82,7 @@ class EnhancedPortfolioEnv(gym.Env):
         initial: bool = True,
         mode: str = "train",
         render_mode: Optional[str] = None,
+        normalize_obs: bool = True,
     ):
         """
         Initialize the Enhanced Portfolio Environment.
@@ -104,6 +105,7 @@ class EnhancedPortfolioEnv(gym.Env):
             initial: Whether this is initial setup
             mode: 'train' or 'trade'
             render_mode: Rendering mode for gymnasium compatibility
+            normalize_obs: Whether to normalize observations (recommended for new training)
         """
         super().__init__()
         
@@ -123,6 +125,7 @@ class EnhancedPortfolioEnv(gym.Env):
         self.initial = initial
         self.mode = mode
         self.render_mode = render_mode
+        self.normalize_obs = normalize_obs
         
         # Get unique tickers
         self.tickers = sorted(df['tic'].unique())
@@ -204,11 +207,34 @@ class EnhancedPortfolioEnv(gym.Env):
         Construct the observation state vector.
         
         State = [cash, holdings, prices, tech_indicators, sentiment_features]
+        
+        If normalize_obs=True (recommended for new training):
+        - Cash: normalized by initial_amount (centered around 0)
+        - Holdings: normalized by hmax (typical range 0-1)
+        - Prices: log-normalized and scaled (typical range -1 to 1)
+        - Tech/Sentiment: already normalized by processor (range -3 to 3)
+        
+        If normalize_obs=False (for backward compatibility with old models):
+        - Raw cash, holdings, and prices are used
         """
         # Get current prices
         prices = self.data['close'].values
         
-        # Get technical indicators
+        if self.normalize_obs:
+            # Normalize cash: ratio to initial amount, centered at 0
+            obs_cash = (self.cash / self.initial_amount) - 1.0
+            # Normalize holdings: ratio to hmax
+            obs_holdings = self.holdings / self.hmax
+            # Normalize prices: log-scale relative to mean price
+            mean_price = np.mean(prices) if np.mean(prices) > 0 else 1.0
+            obs_prices = np.log(prices / mean_price + 1e-8)
+        else:
+            # Raw values (backward compatible with old models)
+            obs_cash = self.cash
+            obs_holdings = self.holdings
+            obs_prices = prices
+        
+        # Get technical indicators (already normalized by processor)
         tech_features = []
         for indicator in self.tech_indicator_list:
             if indicator in self.data.columns:
@@ -216,7 +242,7 @@ class EnhancedPortfolioEnv(gym.Env):
             else:
                 tech_features.extend([0.0] * self.stock_dim)
         
-        # Get sentiment features (if enabled)
+        # Get sentiment features (if enabled, already normalized)
         sentiment_features = []
         if self.include_sentiment:
             for feature in self.sentiment_feature_list:
@@ -227,9 +253,9 @@ class EnhancedPortfolioEnv(gym.Env):
         
         # Construct state
         state = np.concatenate([
-            [self.cash],
-            self.holdings,
-            prices,
+            [obs_cash],
+            obs_holdings,
+            obs_prices,
             tech_features,
             sentiment_features,
         ]).astype(np.float32)

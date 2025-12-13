@@ -163,6 +163,7 @@ def create_environment(
     df: pd.DataFrame,
     feature_info: Dict[str, Any],
     include_sentiment: bool = True,
+    normalize_obs: bool = True,
 ) -> EnhancedPortfolioEnv:
     """
     Create enhanced portfolio environment.
@@ -171,6 +172,7 @@ def create_environment(
         df: Processed DataFrame
         feature_info: Feature information from processor
         include_sentiment: Whether to include sentiment features
+        normalize_obs: Whether to normalize observations (recommended for training)
         
     Returns:
         EnhancedPortfolioEnv instance
@@ -193,6 +195,7 @@ def create_environment(
         tech_indicator_list=tech_indicators,
         sentiment_feature_list=sentiment_features,
         include_sentiment=include_sentiment,
+        normalize_obs=normalize_obs,
         print_verbosity=0,
         **ENV_CONFIG,
     )
@@ -301,7 +304,7 @@ def evaluate_agent(
     
     Args:
         model: Trained PPO model
-        test_env: Test environment
+        test_env: Test environment (used directly, not wrapped)
         deterministic: Use deterministic actions
         
     Returns:
@@ -309,16 +312,16 @@ def evaluate_agent(
     """
     print("\n[4/5] Evaluating on test period...")
     
-    # Wrap environment
-    test_env_wrapped = DummyVecEnv([lambda: test_env])
-    
-    # Run evaluation
-    obs = test_env_wrapped.reset()
+    # Run evaluation directly on environment (not wrapped)
+    # This ensures we get stats from the actual environment used
+    obs, info = test_env.reset()
     done = False
     
     while not done:
-        action, _ = model.predict(obs, deterministic=deterministic)
-        obs, reward, done, info = test_env_wrapped.step(action)
+        # Model expects batch dimension
+        action, _ = model.predict(obs.reshape(1, -1), deterministic=deterministic)
+        action = action[0]  # Remove batch dimension
+        obs, reward, done, truncated, info = test_env.step(action)
     
     # Get portfolio statistics
     stats = test_env.get_portfolio_stats()
