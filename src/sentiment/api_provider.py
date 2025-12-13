@@ -120,20 +120,8 @@ class FinBertApiProvider(SentimentDataProvider):
             DataFrame with current sentiment
         """
         if self._available:
-            # TODO: Implement actual API call
-            # Example implementation:
-            # results = []
-            # for ticker in tickers:
-            #     headlines = self._fetch_headlines(ticker)
-            #     sentiment = self._call_finbert_api(headlines)
-            #     results.append({
-            #         "date": datetime.now().strftime("%Y-%m-%d"),
-            #         "ticker": ticker,
-            #         "sentiment_score": sentiment["score"],
-            #         "sentiment_confidence": sentiment["confidence"],
-            #         "news_count": len(headlines),
-            #     })
-            # return pd.DataFrame(results)
+            # TODO: Implement actual API call when API is configured
+            # For now, fall through to fallback behavior
             pass
         
         if self.fallback_to_neutral:
@@ -155,7 +143,12 @@ class FinBertApiProvider(SentimentDataProvider):
         Returns sentiment_score=0 (neutral) for all tickers and dates.
         This ensures the model can still run without sentiment data.
         """
-        dates = pd.date_range(start=start_date, end=end_date, freq="B")  # Business days
+        # Use inclusive date range (include both start and end)
+        dates = pd.date_range(start=start_date, end=end_date, freq="D")
+        
+        # If no dates (shouldn't happen), use the start_date directly
+        if len(dates) == 0:
+            dates = [pd.to_datetime(start_date)]
         
         records = []
         for date in dates:

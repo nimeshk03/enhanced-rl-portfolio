@@ -287,20 +287,24 @@ rl_portfolio/
 │   │   ├── api_provider.py # FinBertApiProvider for live inference
 │   │   ├── aggregator.py   # Daily aggregation utilities
 │   │   └── features.py     # Sentiment feature engineering
-│   └── data/               # Data collection and processing
+│   ├── data/               # Data collection and processing
+│   │   ├── __init__.py
+│   │   ├── news_collector.py      # Multi-source news collection
+│   │   ├── sentiment_inference.py # FinBERT sentiment inference
+│   │   └── sentiment_proxy.py     # Proxy sentiment for sparse periods
+│   └── env/                # Enhanced trading environments
 │       ├── __init__.py
-│       ├── news_collector.py      # Multi-source news collection
-│       ├── sentiment_inference.py # FinBERT sentiment inference
-│       └── sentiment_proxy.py     # Proxy sentiment for sparse periods
+│       └── enhanced_portfolio_env.py  # Gymnasium env with sentiment
 ├── notebooks/              # Jupyter notebooks
 │   └── generate_historical_sentiment.ipynb  # Colab/Kaggle GPU inference
-├── tests/                  # Unit tests (103 total)
+├── tests/                  # Unit tests (122 total)
 │   ├── __init__.py
 │   ├── test_sentiment_provider.py   # 21 provider tests
 │   ├── test_sentiment_features.py   # 23 feature tests
 │   ├── test_news_collector.py       # 20 news collector tests
 │   ├── test_sentiment_inference.py  # 17 inference tests
-│   └── test_sentiment_proxy.py      # 22 proxy tests
+│   ├── test_sentiment_proxy.py      # 22 proxy tests
+│   └── test_enhanced_env.py         # 19 environment tests
 ├── experiments/            # Experiment tracking and results
 │   ├── experiments_summary.csv
 │   └── {experiment_name}/
