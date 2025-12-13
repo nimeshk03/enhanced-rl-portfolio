@@ -2,12 +2,14 @@
 Data Collection and Processing Module
 
 Provides utilities for collecting historical financial news data,
-running sentiment inference, and generating proxy sentiment.
+running sentiment inference, generating proxy sentiment, and
+processing data for RL training.
 
 Components:
 - news_collector.py: Multi-source news data collection
 - sentiment_inference.py: FinBERT sentiment inference engine
 - sentiment_proxy.py: Proxy sentiment for sparse periods
+- enhanced_processor.py: Data processing for RL training
 """
 
 from src.data.news_collector import (
@@ -35,6 +37,12 @@ from src.data.sentiment_proxy import (
     generate_complete_sentiment,
 )
 
+from src.data.enhanced_processor import (
+    EnhancedDataProcessor,
+    ProcessorConfig,
+    create_training_data,
+)
+
 __all__ = [
     # News collection
     "NewsCollector",
@@ -55,4 +63,8 @@ __all__ = [
     "generate_proxy_sentiment",
     "blend_sentiment",
     "generate_complete_sentiment",
+    # Enhanced data processor
+    "EnhancedDataProcessor",
+    "ProcessorConfig",
+    "create_training_data",
 ]
