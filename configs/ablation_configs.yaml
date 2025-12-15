@@ -1,0 +1,90 @@
+# Ablation Study Configurations
+# Tests which sentiment features contribute to model performance
+#
+# Each configuration trains with a different subset of sentiment features
+# Run each config with 3 seeds to measure variance
+
+# Shared settings for all experiments
+defaults:
+  total_timesteps: 1_500_000
+  train_end: "2024-06-30"
+  test_start: "2024-07-01"
+  test_end: "2025-11-30"
+  seeds: [42, 123, 456]
+  
+  env_config:
+    hmax: 100
+    initial_amount: 100000
+    buy_cost_pct: 0.001
+    sell_cost_pct: 0.001
+    reward_scaling: 0.0001
+    sentiment_reward_weight: 0.0
+  
+  ppo_config:
+    learning_rate: 0.0003
+    n_steps: 2048
+    batch_size: 128
+    n_epochs: 10
+    gamma: 0.99
+    gae_lambda: 0.95
+    clip_range: 0.2
+    ent_coef: 0.05
+    vf_coef: 0.5
+    max_grad_norm: 0.5
+  
+  policy_kwargs:
+    net_arch: [128, 128]
+
+# Ablation configurations
+# Each tests a different subset of sentiment features
+configurations:
+  
+  # Control: No sentiment features (baseline)
+  baseline:
+    name: "baseline"
+    description: "No sentiment features - technical indicators only"
+    include_sentiment: false
+    sentiment_features: []
+    expected_sharpe: 1.1  # Based on v2 baseline results
+  
+  # Test 1: Just sentiment score
+  score_only:
+    name: "score_only"
+    description: "Only sentiment_score feature"
+    include_sentiment: true
+    sentiment_features:
+      - sentiment_score
+    expected_sharpe: 1.15
+  
+  # Test 2: Core 3 features (score + volume + proxy)
+  core_3:
+    name: "core_3"
+    description: "Core sentiment features: score, news volume, proxy"
+    include_sentiment: true
+    sentiment_features:
+      - sentiment_score
+      - news_count
+      - sentiment_proxy
+    expected_sharpe: 1.2
+  
+  # Test 3: All 6 sentiment features
+  all_sentiment:
+    name: "all_sentiment"
+    description: "All 6 sentiment features"
+    include_sentiment: true
+    sentiment_features:
+      - sentiment_score
+      - news_count
+      - sentiment_proxy
+      - vix_component
+      - returns_component
+      - sector_component
+    expected_sharpe: 1.22  # Based on v2 enhanced results
+
+# Available sentiment features reference:
+# - sentiment_score: Aggregated sentiment from news/social media
+# - news_count: Volume of news articles
+# - sentiment_proxy: Derived sentiment indicator
+# - vix_component: VIX-based sentiment component
+# - returns_component: Returns-based sentiment component  
+# - sector_component: Sector-specific sentiment
