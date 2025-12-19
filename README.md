@@ -396,10 +396,44 @@ docker build -t rl_portfolio .
 
 ## Results Summary
 
-### Best Performing Agent
+### Latest Results (December 2025)
+
+#### Hyperparameter-Tuned Model (Optuna)
+
+**PPO with Optuna-Tuned Hyperparameters** (`ppo_enhanced_tuned`)
+- **Total Return**: 59.9% (Jul 2024 - Nov 2025)
+- **Sharpe Ratio**: 2.28 (Target: >1.0) - **EXCEEDED by 128%**
+- **Max Drawdown**: -12.0% (Target: <25%) - **ACHIEVED**
+- **Training Time**: ~36 minutes (1.5M timesteps)
+
+**Tuned Hyperparameters:**
+| Parameter | Value |
+|-----------|-------|
+| learning_rate | 8.1e-4 |
+| batch_size | 64 |
+| ent_coef | 0.0024 |
+| net_arch | [256, 256] |
+| gamma | 0.992 |
+
+#### Ablation Study Results
+
+Tested 4 configurations x 3 seeds = 12 experiments:
+
+| Config | Mean Sharpe | Mean Return | Sentiment Features |
+|--------|-------------|-------------|-------------------|
+| **baseline** | **1.627** | **47.8%** | 0 (tech only) |
+| all_sentiment | 1.431 | 43.8% | 6 |
+| score_only | 1.380 | 41.6% | 1 |
+| core_3 | 1.140 | 36.8% | 3 |
+
+**Key Finding:** Baseline model (no sentiment) outperforms sentiment-enhanced models with current feature engineering.
+
+---
+
+### Previous Best (Original Training)
 
 **PPO with 1M Timesteps + High Entropy (Seed 42)** (`ppo_1m_high_entropy`)
-- **Total Return**: 86.94% (2024-2025)
+- **Total Return**: 86.94% (2024-2025, different test period)
 - **Sharpe Ratio**: 1.617 (Target: >1.0) - ACHIEVED
 - **Max Drawdown**: -21.62% (Target: <25%) - ACHIEVED
 - **vs SPY**: +38.35% (significantly outperformed benchmark!)
@@ -465,10 +499,46 @@ Complete experiment history tracked in `experiments/experiments_summary.csv`:
 - **Annual Return**: ~87% (Target: Beat SPY by 5%+) - **Beat SPY by 38%**
 - **Risk-Adjusted Returns**: 70% better than SPY
 
+## Enhanced Training (December 2025)
+
+### Hyperparameter Tuning with Optuna
+
+Used Optuna TPE sampler with median pruning to search hyperparameter space:
+
+```bash
+python -m src.experiments.hyperparameter_search --n-trials 25
+```
+
+**Search Space:**
+- learning_rate: 1e-5 to 1e-3 (log scale)
+- batch_size: [32, 64, 128]
+- ent_coef: 0.001 to 0.1 (log scale)
+- net_arch_size: [64, 128, 256]
+- n_steps, n_epochs, gamma, vf_coef, max_grad_norm
+
+**Results:** 25 trials, best Sharpe 2.28 (Trial 21)
+
+### Ablation Study
+
+Tested which sentiment features contribute to performance:
+
+```bash
+python -m src.experiments.ablation --config all
+```
+
+**Configurations tested:**
+- `baseline`: No sentiment (technical indicators only)
+- `score_only`: Just sentiment_score
+- `core_3`: score + news_count + sentiment_proxy
+- `all_sentiment`: All 6 sentiment features
+
+**Finding:** Baseline outperforms sentiment models. See `experiments/ablation_analysis_report.md`.
+
 ## Technologies Used
 
 - **FinRL**: Financial Reinforcement Learning framework
 - **Stable-Baselines3**: State-of-the-art RL algorithms (PPO, A2C)
+- **Optuna**: Hyperparameter optimization
 - **yfinance**: Yahoo Finance data downloader
 - **pandas**: Data manipulation
 - **Docker**: Reproducible environment
@@ -485,6 +555,18 @@ MIT License - Feel free to use for learning and portfolio projects
 
 ---
 
-**Status**: Data pipeline [DONE] | Training (10 experiments) [DONE] | Backtesting [DONE] | Paper Trading Deployed | Dashboard Live | Sentiment Module [IN PROGRESS]
+**Status**: Data pipeline [DONE] | Training [DONE] | Hyperparameter Tuning [DONE] | Ablation Study [DONE] | Backtesting [DONE] | Paper Trading Deployed | Dashboard Live
 
-Last updated: 2025-12-10
+### Project Milestones
+
+| Phase | Status | Description |
+|-------|--------|-------------|
+| Data Pipeline | DONE | 10 assets, 11 years, 17 features |
+| Initial Training | DONE | 10 experiments, best Sharpe 1.617 |
+| Sentiment Enhancement | DONE | 6 sentiment features added |
+| Hyperparameter Tuning | DONE | Optuna 25 trials, Sharpe 2.28 |
+| Ablation Study | DONE | 12 experiments, baseline wins |
+| Paper Trading | DEPLOYED | Alpaca integration |
+| Dashboard | LIVE | Streamlit monitoring |
+
+Last updated: 2025-12-19
