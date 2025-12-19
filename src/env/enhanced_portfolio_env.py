@@ -217,8 +217,8 @@ class EnhancedPortfolioEnv(gym.Env):
         If normalize_obs=False (for backward compatibility with old models):
         - Raw cash, holdings, and prices are used
         """
-        # Get current prices
-        prices = self.data['close'].values
+        # Get current prices (ensure float64 for numpy operations)
+        prices = np.array(self.data['close'].values, dtype=np.float64)
         
         if self.normalize_obs:
             # Normalize cash: ratio to initial amount, centered at 0
@@ -264,7 +264,7 @@ class EnhancedPortfolioEnv(gym.Env):
     
     def _calculate_portfolio_value(self) -> float:
         """Calculate current portfolio value."""
-        prices = self.data['close'].values
+        prices = np.array(self.data['close'].values, dtype=np.float64)
         stock_value = np.sum(self.holdings * prices)
         return self.cash + stock_value
     
@@ -276,7 +276,7 @@ class EnhancedPortfolioEnv(gym.Env):
         - Negative: sell (magnitude * hmax shares)
         - Positive: buy (magnitude * hmax shares)
         """
-        prices = self.data['close'].values
+        prices = np.array(self.data['close'].values, dtype=np.float64)
         total_cost = 0.0
         
         for i, action in enumerate(actions):
