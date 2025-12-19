@@ -1,0 +1,45 @@
+{
+  "experiment_name": "core_3_seed456",
+  "config_name": "core_3",
+  "seed": 456,
+  "timestamp": "2025-12-18T19:36:25.982096",
+  "training_time": "0:39:03.151324",
+  "total_timesteps": 1500000,
+  "config": {
+    "description": "Core sentiment features: score, news volume, proxy",
+    "include_sentiment": true,
+    "sentiment_features": [
+      "sentiment_score",
+      "news_count",
+      "sentiment_proxy"
+    ],
+    "env_config": {
+      "hmax": 100,
+      "initial_amount": 100000,
+      "buy_cost_pct": 0.001,
+      "sell_cost_pct": 0.001,
+      "reward_scaling": 0.0001,
+      "sentiment_reward_weight": 0.0
+    },
+    "ppo_config": {
+      "learning_rate": 0.000812,
+      "n_steps": 2048,
+      "batch_size": 64,
+      "n_epochs": 10,
+      "gamma": 0.992,
+      "gae_lambda": 0.95,
+      "clip_range": 0.2,
+      "ent_coef": 0.0024,
+      "vf_coef": 0.428,
+      "max_grad_norm": 0.769
+    }
+  },
+  "results": {
+    "final_value": 132432.12170355226,
+    "total_return": 0.3243212170355226,
+    "sharpe_ratio": 1.1573706832586352,
+    "max_drawdown": -0.1700144442998457,
+    "total_trades": 5,
+    "total_cost": 99.89196069335938
+  }
+}

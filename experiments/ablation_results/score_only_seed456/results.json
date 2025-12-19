@@ -1,0 +1,43 @@
+{
+  "experiment_name": "score_only_seed456",
+  "config_name": "score_only",
+  "seed": 456,
+  "timestamp": "2025-12-18T17:39:17.673960",
+  "training_time": "0:38:06.953656",
+  "total_timesteps": 1500000,
+  "config": {
+    "description": "Only sentiment_score feature",
+    "include_sentiment": true,
+    "sentiment_features": [
+      "sentiment_score"
+    ],
+    "env_config": {
+      "hmax": 100,
+      "initial_amount": 100000,
+      "buy_cost_pct": 0.001,
+      "sell_cost_pct": 0.001,
+      "reward_scaling": 0.0001,
+      "sentiment_reward_weight": 0.0
+    },
+    "ppo_config": {
+      "learning_rate": 0.000812,
+      "n_steps": 2048,
+      "batch_size": 64,
+      "n_epochs": 10,
+      "gamma": 0.992,
+      "gae_lambda": 0.95,
+      "clip_range": 0.2,
+      "ent_coef": 0.0024,
+      "vf_coef": 0.428,
+      "max_grad_norm": 0.769
+    }
+  },
+  "results": {
+    "final_value": 150985.7562844658,
+    "total_return": 0.5098575628446581,
+    "sharpe_ratio": 1.7052902368593406,
+    "max_drawdown": -0.19222399223933995,
+    "total_trades": 10,
+    "total_cost": 100.05527711868285
+  }
+}

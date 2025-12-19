@@ -1,0 +1,41 @@
+{
+  "experiment_name": "baseline_seed123",
+  "config_name": "baseline",
+  "seed": 123,
+  "timestamp": "2025-12-18T15:06:38.595525",
+  "training_time": "0:38:03.264153",
+  "total_timesteps": 1500000,
+  "config": {
+    "description": "No sentiment features - technical indicators only",
+    "include_sentiment": false,
+    "sentiment_features": [],
+    "env_config": {
+      "hmax": 100,
+      "initial_amount": 100000,
+      "buy_cost_pct": 0.001,
+      "sell_cost_pct": 0.001,
+      "reward_scaling": 0.0001,
+      "sentiment_reward_weight": 0.0
+    },
+    "ppo_config": {
+      "learning_rate": 0.000812,
+      "n_steps": 2048,
+      "batch_size": 64,
+      "n_epochs": 10,
+      "gamma": 0.992,
+      "gae_lambda": 0.95,
+      "clip_range": 0.2,
+      "ent_coef": 0.0024,
+      "vf_coef": 0.428,
+      "max_grad_norm": 0.769
+    }
+  },
+  "results": {
+    "final_value": 156693.70746805574,
+    "total_return": 0.5669370746805574,
+    "sharpe_ratio": 1.9536039416646789,
+    "max_drawdown": -0.06890617515268871,
+    "total_trades": 18,
+    "total_cost": 216.8752193222046
+  }
+}
