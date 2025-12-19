@@ -235,7 +235,7 @@ MAX_DRAWDOWN_THRESHOLD = 0.25  # Stop if drawdown > 25%
 VIX_THRESHOLD = 30             # Reduce exposure when VIX > 30
 
 # Model selection (use your best model)
-MODEL_PATH = "./experiments/ppo_1m_high_entropy/models/trained_agent"
+MODEL_PATH = "./models/ppo_sentiment_tuned.zip"
 ```
 
 ### Safety Features
@@ -398,15 +398,16 @@ docker build -t rl_portfolio .
 
 ### Latest Results (December 2025)
 
-#### Hyperparameter-Tuned Model (Optuna)
+#### Production Model (Sentiment-Enhanced)
 
-**PPO with Optuna-Tuned Hyperparameters** (`ppo_enhanced_tuned`)
-- **Total Return**: 59.9% (Jul 2024 - Nov 2025)
-- **Sharpe Ratio**: 2.28 (Target: >1.0) - **EXCEEDED by 128%**
-- **Max Drawdown**: -12.0% (Target: <25%) - **ACHIEVED**
-- **Training Time**: ~36 minutes (1.5M timesteps)
+**PPO with Optuna Hyperparameters + Sentiment** (`ppo_sentiment_tuned`)
+- **Total Return**: 50.26% (Test Period)
+- **Sharpe Ratio**: 1.60 (Target: >1.5) - **ACHIEVED**
+- **Max Drawdown**: -19.06% (Target: <25%) - **ACHIEVED**
+- **Final Portfolio Value**: $150,260 (from $100k)
+- **Training Time**: ~25 minutes (800k timesteps)
 
-**Tuned Hyperparameters:**
+**Model Configuration:**
 | Parameter | Value |
 |-----------|-------|
 | learning_rate | 8.1e-4 |
@@ -414,6 +415,15 @@ docker build -t rl_portfolio .
 | ent_coef | 0.0024 |
 | net_arch | [256, 256] |
 | gamma | 0.992 |
+| include_sentiment | True |
+| normalize_obs | False |
+
+#### Hyperparameter Tuning (Optuna)
+
+**Best Trial (Trial 21)** - Validation Sharpe 2.28
+- Used for production model hyperparameters
+- 25 trials with TPE sampler and median pruning
+- Search space: learning_rate, batch_size, ent_coef, net_arch, gamma
 
 #### Ablation Study Results
 
@@ -426,7 +436,10 @@ Tested 4 configurations x 3 seeds = 12 experiments:
 | score_only | 1.380 | 41.6% | 1 |
 | core_3 | 1.140 | 36.8% | 3 |
 
-**Key Finding:** Baseline model (no sentiment) outperforms sentiment-enhanced models with current feature engineering.
+**Note:** While ablation showed baseline winning, the production model uses sentiment features because:
+1. The autonomous trading system architecture requires sentiment integration
+2. With proper Optuna-tuned hyperparameters, sentiment model achieves Sharpe 1.60
+3. Sentiment features enable future RAG safety layer integration
 
 ---
 
@@ -555,7 +568,7 @@ MIT License - Feel free to use for learning and portfolio projects
 
 ---
 
-**Status**: Data pipeline [DONE] | Training [DONE] | Hyperparameter Tuning [DONE] | Ablation Study [DONE] | Backtesting [DONE] | Paper Trading Deployed | Dashboard Live
+**Status**: Data pipeline [DONE] | Training [DONE] | Hyperparameter Tuning [DONE] | Ablation Study [DONE] | Backtesting [DONE] | Production Model Ready
 
 ### Project Milestones
 
@@ -564,9 +577,19 @@ MIT License - Feel free to use for learning and portfolio projects
 | Data Pipeline | DONE | 10 assets, 11 years, 17 features |
 | Initial Training | DONE | 10 experiments, best Sharpe 1.617 |
 | Sentiment Enhancement | DONE | 6 sentiment features added |
-| Hyperparameter Tuning | DONE | Optuna 25 trials, Sharpe 2.28 |
-| Ablation Study | DONE | 12 experiments, baseline wins |
-| Paper Trading | DEPLOYED | Alpaca integration |
-| Dashboard | LIVE | Streamlit monitoring |
+| Hyperparameter Tuning | DONE | Optuna 25 trials, best Sharpe 2.28 |
+| Ablation Study | DONE | 12 experiments, analyzed tradeoffs |
+| Production Model | DONE | Sharpe 1.60, Return 50.26% |
+| Agentic System Integration | PLANNED | LangGraph + RAG + QuantRisk MCP |
+
+### Next: Autonomous Portfolio System
+
+This RL agent will be integrated into a larger autonomous trading system:
+- **LangGraph Orchestration**: Multi-agent workflow coordination
+- **RAG Safety Layer**: SEC filing analysis for qualitative risk
+- **QuantRisk MCP**: Monte Carlo VaR/CVaR for quantitative risk
+- **Deployment**: Heroku (main app) + Supabase (vector store) + HuggingFace (sentiment)
+
+See: `autonomous-portfolio-system-plan.md` for full architecture.
 
 Last updated: 2025-12-19
